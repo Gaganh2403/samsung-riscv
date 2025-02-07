@@ -6,8 +6,8 @@ This RISC-V Internship using **VSDSquadron Mini** is based on the RISC-V archite
 
 - **Name**: Gagan H  
 - **College**: Sahyadri College of Engineering and Management, Mangaluru 575007  
-- **Email**: [gagan.ec22@sahyadri.edu.in](gagan.ec22@sahyadri.edu.in)  
-- **GitHub Profile**: [GaganH-Sahyadri-ECE](https://github.com/GaganH-Sahyadri-ECE)  
+- **Email**: [gaganhirinja2403@gmail.com](gaganhirinja2403@gmail.com)  
+- **GitHub Profile**: [Gaganh2403](https://github.com/Gaganh2403)  
 - **LinkedIn Profile**: [Gagan H](https://www.linkedin.com/in/gagan-h-ba69a9328?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)  
 # Task-1
 
