@@ -6,8 +6,8 @@ This RISC-V Internship using **VSDSquadron Mini** is based on the RISC-V archite
 
 - **Name**: Gagan H  
 - **College**: Sahyadri College of Engineering and Management, Mangaluru 575007  
-- **Email**: [gaganhirinja2403@gmail.com](gaganhirinja2403@gmail.com)  
-- **GitHub Profile**: [Gaganh2403](https://github.com/Gaganh2403)  
+- **Email**: [gagan.ec22@sahyadri.edu.in](gagan.ec22@sahyadri.edu.in)  
+- **GitHub Profile**: [GaganH-Sahyadri-ECE](https://github.com/GaganH-Sahyadri-ECE)  
 - **LinkedIn Profile**: [Gagan H](https://www.linkedin.com/in/gagan-h-ba69a9328?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)  
 # Task-1
 
@@ -238,3 +238,166 @@ Here are the screenshots for the Functional Simulation of RISC-V Core:
 
 ---
 </details>
+
+# Task 5
+<details>
+ <summary> To implement any digital circuit using VSDSquadron Mini and check whether building and uploading of C program file on RISCV processor works.</summary>
+ 
+# 8:1 Multiplexer using VSD Squadron Mini
+
+## Overview
+This project involves the implementation of an 8:1 multiplexer circuit using the **VSD Squadron Mini**. A multiplexer is a fundamental digital circuit that selects one of the multiple input signals and forwards it to a single output line. This project showcases the practical application of digital logic and RISC-V architecture by implementing a multiplexer function. 
+
+### Key Features:
+- Reads 8 input signals through GPIO pins (push buttons)
+- Implements an 8:1 multiplexer logic in software
+- Simulates the design using PlatformIO IDE
+- Displays the selected output using an LED
+- Provides hands-on experience with digital signal control using a microcontroller
+- Demonstrates the use of RISC-V for custom hardware acceleration
+
+## Components Required
+- **VSD Squadron Mini**
+- **Push buttons** (3 selection inputs)
+- **8 LED** (to display the output)
+- **Breadboard**
+- **Jumper wires**
+- **VS Code** (for software development)
+- **PlatformIO** (multi-framework professional IDE)
+
+## Hardware Connections
+- **Inputs**: Eleven push-button inputs are connected to the GPIO Pins of **VSD Squadron Mini** (8 for data inputs, 3 for selection lines).
+- **Output**: One LED is connected to display the selected output.
+- **Wiring**: The GPIO pins are configured as per the reference manual to ensure proper signal flow between components.
+
+![To implement any digital circuit using VSDSquadron Mini and check whether building and uploading of C program file on RISCV processor works.](./TASK-5/image1.png) 
+
+## Working and Block Diagram
+### Physical Circuit:
+- Push buttons are used to input 8 different data signals and 3 selection bits.
+- The selection inputs determine which of the 8 inputs is routed to the single output LED.
+- The circuit reads the selection bits and activates the corresponding input signal.
+
+### Selection and Data Flow (Using Logic Gates):
+1. **Selection Logic** (Using AND & OR Gates):
+   - The 3-bit selection input determines which of the 8 input signals is forwarded to the output.
+   - Each input is ANDed with the corresponding selection logic to activate only one path at a time.
+   - Example: If selection bits are `011`, the 4th input signal is activated and passed to the output.
+
+2. **Data Path Management**:
+   - The inputs are structured in a way that only the selected signal reaches the final output.
+   - The use of logic gates ensures proper control over the input data flow.
+   
+3. **Final Output (Multiplexer Functionality)**:
+   - The final output LED represents the value of the selected input.
+   - Changing the selection bits dynamically switches the active input being displayed.
+  
+
+
+## Truth Table for 8:1 Multiplexer
+| S2 | S1 | S0 | Input Selected | Output |
+|----|----|----|---------------|--------|
+|  0 |  0 |  0 | I0            | I0     |
+|  0 |  0 |  1 | I1            | I1     |
+|  0 |  1 |  0 | I2            | I2     |
+|  0 |  1 |  1 | I3            | I3     |
+|  1 |  0 |  0 | I4            | I4     |
+|  1 |  0 |  1 | I5            | I5     |
+|  1 |  1 |  0 | I6            | I6     |
+|  1 |  1 |  1 | I7            | I7     |
+
+## Program
+```
+#include <stdio.h>
+#include <debug.h>
+#include <ch32v00x.h>
+
+uint8_t S0 = 0, S1 = 0, S2 = 0;  // Select Lines (Default 000)
+
+void GPIO_Config(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure = {0}; 
+
+    // Enable Clock for Port C (LEDs) and Port D (Buttons)
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE); 
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+
+    // Configure LEDs (I0 - I7) as output
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | 
+                                  GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+    // Configure Push Buttons (S0, S1, S2) as input (NO Pull-Up)
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;  // Input Pull-Down (Default LOW)
+    GPIO_Init(GPIOD, &GPIO_InitStructure);
+}
+
+void Select_LED(uint8_t selection)
+{
+    // Turn OFF all LEDs first
+    GPIO_WriteBit(GPIOC, GPIO_Pin_0, RESET);
+    GPIO_WriteBit(GPIOC, GPIO_Pin_1, RESET);
+    GPIO_WriteBit(GPIOC, GPIO_Pin_2, RESET);
+    GPIO_WriteBit(GPIOC, GPIO_Pin_3, RESET);
+    GPIO_WriteBit(GPIOC, GPIO_Pin_4, RESET);
+    GPIO_WriteBit(GPIOC, GPIO_Pin_5, RESET);
+    GPIO_WriteBit(GPIOC, GPIO_Pin_6, RESET);
+    GPIO_WriteBit(GPIOC, GPIO_Pin_7, RESET);
+
+    // Turn ON the selected LED
+    switch(selection)
+    {
+        case 0: GPIO_WriteBit(GPIOC, GPIO_Pin_0, SET); break;  // I0 LED ON
+        case 1: GPIO_WriteBit(GPIOC, GPIO_Pin_1, SET); break;  // I1 LED ON
+        case 2: GPIO_WriteBit(GPIOC, GPIO_Pin_2, SET); break;  // I2 LED ON
+        case 3: GPIO_WriteBit(GPIOC, GPIO_Pin_3, SET); break;  // I3 LED ON
+        case 4: GPIO_WriteBit(GPIOC, GPIO_Pin_4, SET); break;  // I4 LED ON
+        case 5: GPIO_WriteBit(GPIOC, GPIO_Pin_5, SET); break;  // I5 LED ON
+        case 6: GPIO_WriteBit(GPIOC, GPIO_Pin_6, SET); break;  // I6 LED ON
+        case 7: GPIO_WriteBit(GPIOC, GPIO_Pin_7, SET); break;  // I7 LED ON
+    }
+}
+
+void Update_Select_Lines()
+{
+    // Read Button States (Active HIGH)
+    S0 = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_1);  
+    S1 = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_2);  
+    S2 = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_3);  
+}
+
+int main()
+{
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+    SystemCoreClockUpdate();
+    Delay_Init();
+    GPIO_Config();
+
+    while(1)
+    {
+        // Update Select Line Values when Buttons are Pressed
+        Update_Select_Lines();
+
+        // Compute Selection Value (S2 S1 S0 as Binary)
+        uint8_t selection = (S2 << 2) | (S1 << 1) | S0;
+
+        // Update LED Output
+        Select_LED(selection);
+
+        Delay_Ms(100);
+    }
+}
+```
+
+  
+     
+
+</details>
+
+
+
+
+
