@@ -240,71 +240,68 @@ Here are the screenshots for the Functional Simulation of RISC-V Core:
 </details>
 
 # Task 5
+
 <details>
- <summary> To implement any digital circuit using VSDSquadron Mini and check whether building and uploading of C program file on RISCV processor works.</summary>
- 
-# 8:1 Multiplexer using VSD Squadron Mini
+ <summary>To implement any digital circuit using VSDSquadron Mini and check whether building and uploading of C program file on RISC-V processor works.</summary>
+
+# 3×3 Multiplier using VSD Squadron Mini
 
 ## Overview
-This project involves the implementation of an 8:1 multiplexer circuit using the **VSD Squadron Mini**. A multiplexer is a fundamental digital circuit that selects one of the multiple input signals and forwards it to a single output line. This project showcases the practical application of digital logic and RISC-V architecture by implementing a multiplexer function. 
+This project demonstrates the implementation of a **3×3 multiplier** circuit using the **VSD Squadron Mini**. A binary multiplier is a fundamental digital circuit that performs multiplication of two binary numbers. The goal of this project is to perform 3-bit multiplication and display the 6-bit result using LEDs.
 
 ### Key Features:
-- Reads 8 input signals through GPIO pins (push buttons)
-- Implements an 8:1 multiplexer logic in software
-- Simulates the design using PlatformIO IDE
-- Displays the selected output using an LED
-- Provides hands-on experience with digital signal control using a microcontroller
-- Demonstrates the use of RISC-V for custom hardware acceleration
+- Takes two 3-bit binary inputs using push buttons.
+- Implements 3×3 binary multiplication logic in software.
+- Displays the 6-bit multiplication result on LEDs.
+- Uses the **RISC-V** processor to control the logic operations.
+- Provides hands-on experience with arithmetic operations in digital logic.
 
 ## Components Required
 - **VSD Squadron Mini**
-- **Push buttons** (3 selection inputs)
-- **8 LED** (to display the output)
+- **Push buttons** (6 input buttons for two 3-bit numbers)
+- **6 LEDs** (to display the output)
 - **Breadboard**
 - **Jumper wires**
 - **VS Code** (for software development)
 - **PlatformIO** (multi-framework professional IDE)
 
 ## Hardware Connections
-- **Inputs**: Eleven push-button inputs are connected to the GPIO Pins of **VSD Squadron Mini** (8 for data inputs, 3 for selection lines).
-- **Output**: One LED is connected to display the selected output.
-- **Wiring**: The GPIO pins are configured as per the reference manual to ensure proper signal flow between components.
-
-![To implement any digital circuit using VSDSquadron Mini and check whether building and uploading of C program file on RISCV processor works.](./TASK-5/image1.png) 
+- **Inputs**: Six push-button inputs are connected to the GPIO Pins of **VSD Squadron Mini** (3 for operand A, 3 for operand B).
+- **Output**: Six LEDs are connected to GPIO pins to display the multiplication result.
+- **Wiring**: GPIO pins are configured according to the reference manual for correct operation.
 
 ## Working and Block Diagram
 ### Physical Circuit:
-- Push buttons are used to input 8 different data signals and 3 selection bits.
-- The selection inputs determine which of the 8 inputs is routed to the single output LED.
-- The circuit reads the selection bits and activates the corresponding input signal.
+- Two sets of 3-bit binary numbers are given as inputs via push buttons.
+- The selection logic reads the values of both numbers and computes the multiplication.
+- The 6-bit result is displayed on LEDs.
 
-### Selection and Data Flow (Using Logic Gates):
-1. **Selection Logic** (Using AND & OR Gates):
-   - The 3-bit selection input determines which of the 8 input signals is forwarded to the output.
-   - Each input is ANDed with the corresponding selection logic to activate only one path at a time.
-   - Example: If selection bits are `011`, the 4th input signal is activated and passed to the output.
-
-2. **Data Path Management**:
-   - The inputs are structured in a way that only the selected signal reaches the final output.
-   - The use of logic gates ensures proper control over the input data flow.
+### Multiplication Logic:
+1. **Binary Multiplication Process:**
+   - The two 3-bit numbers (A and B) are multiplied to produce a 6-bit result.
+   - Example: If **A = 101 (5 in decimal)** and **B = 011 (3 in decimal)**, then **A × B = 1111 (15 in decimal)**.
    
-3. **Final Output (Multiplexer Functionality)**:
-   - The final output LED represents the value of the selected input.
-   - Changing the selection bits dynamically switches the active input being displayed.
-  
+2. **Bitwise Multiplication & Addition:**
+   - Each bit of B is multiplied with all bits of A.
+   - The results are shifted and added to generate the final 6-bit output.
 
+3. **Output Representation:**
+   - The final 6-bit product is displayed on LEDs.
+   - LSB (Least Significant Bit) represents the smallest value, and MSB (Most Significant Bit) represents the highest.
 
-## Truth Table for 8:1 Multiplexer
-| S2 | S1 | S0 | Input Selected | Output |
-|----|----|----|---------------|--------|
-|  0 |  0 |  0 | I0            | I0     |
-|  0 |  0 |  1 | I1            | I1     |
-|  0 |  1 |  0 | I2            | I2     |
-|  0 |  1 |  1 | I3            | I3     |
-|  1 |  0 |  0 | I4            | I4     |
-|  1 |  0 |  1 | I5            | I5     |
-|  1 |  1 |  0 | I6            | I6     |
-|  1 |  1 |  1 | I7            | I7     |
+## Truth Table for 3×3 Multiplier
+
+| A2 | A1 | A0 | B2 | B1 | B0 | Output (P5 P4 P3 P2 P1 P0) |
+|----|----|----|----|----|----|----------------------------|
+|  0 |  0 |  0 |  0 |  0 |  0 | 000000 |
+|  0 |  0 |  1 |  0 |  0 |  1 | 000001 |
+|  0 |  1 |  0 |  0 |  1 |  0 | 000010 |
+|  0 |  1 |  1 |  0 |  1 |  1 | 000111 |
+|  1 |  0 |  0 |  1 |  0 |  0 | 010000 |
+|  1 |  0 |  1 |  1 |  0 |  1 | 010101 |
+|  1 |  1 |  0 |  1 |  1 |  0 | 011100 |
+|  1 |  1 |  1 |  1 |  1 |  1 | 111001 |
+
 
 ## Program
 ```
@@ -312,84 +309,96 @@ This project involves the implementation of an 8:1 multiplexer circuit using the
 #include <debug.h>
 #include <ch32v00x.h>
 
-uint8_t S0 = 0, S1 = 0, S2 = 0;  // Select Lines (Default 000)
-
 void GPIO_Config(void)
 {
-    GPIO_InitTypeDef GPIO_InitStructure = {0}; 
-
-    // Enable Clock for Port C (LEDs) and Port D (Buttons)
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE); 
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-
-    // Configure LEDs (I0 - I7) as output
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | 
-                                  GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
+    GPIO_InitTypeDef GPIO_InitStructure = {0}; // Structure variable for GPIO config
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE); // Enable Port D clock
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE); // Enable Port C clock
+	
+    // 3-bit inputs (A, B) and Reset Button
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU; 
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
+    
+    // 4 output bits from Port C (bit 0-3)
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
-
-    // Configure Push Buttons (S0, S1, S2) as input (NO Pull-Up)
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;  // Input Pull-Down (Default LOW)
+    
+    // 2 output bits from Port D (bit 4-5)
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOD, &GPIO_InitStructure);
-}
-
-void Select_LED(uint8_t selection)
-{
-    // Turn OFF all LEDs first
-    GPIO_WriteBit(GPIOC, GPIO_Pin_0, RESET);
-    GPIO_WriteBit(GPIOC, GPIO_Pin_1, RESET);
-    GPIO_WriteBit(GPIOC, GPIO_Pin_2, RESET);
-    GPIO_WriteBit(GPIOC, GPIO_Pin_3, RESET);
-    GPIO_WriteBit(GPIOC, GPIO_Pin_4, RESET);
-    GPIO_WriteBit(GPIOC, GPIO_Pin_5, RESET);
-    GPIO_WriteBit(GPIOC, GPIO_Pin_6, RESET);
-    GPIO_WriteBit(GPIOC, GPIO_Pin_7, RESET);
-
-    // Turn ON the selected LED
-    switch(selection)
-    {
-        case 0: GPIO_WriteBit(GPIOC, GPIO_Pin_0, SET); break;  // I0 LED ON
-        case 1: GPIO_WriteBit(GPIOC, GPIO_Pin_1, SET); break;  // I1 LED ON
-        case 2: GPIO_WriteBit(GPIOC, GPIO_Pin_2, SET); break;  // I2 LED ON
-        case 3: GPIO_WriteBit(GPIOC, GPIO_Pin_3, SET); break;  // I3 LED ON
-        case 4: GPIO_WriteBit(GPIOC, GPIO_Pin_4, SET); break;  // I4 LED ON
-        case 5: GPIO_WriteBit(GPIOC, GPIO_Pin_5, SET); break;  // I5 LED ON
-        case 6: GPIO_WriteBit(GPIOC, GPIO_Pin_6, SET); break;  // I6 LED ON
-        case 7: GPIO_WriteBit(GPIOC, GPIO_Pin_7, SET); break;  // I7 LED ON
-    }
-}
-
-void Update_Select_Lines()
-{
-    // Read Button States (Active HIGH)
-    S0 = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_1);  
-    S1 = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_2);  
-    S2 = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_3);  
 }
 
 int main()
 {
+    uint8_t a = 0;
+    uint8_t b = 0;
+    
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
     SystemCoreClockUpdate();
     Delay_Init();
     GPIO_Config();
 
-    while(1)
+    while (1)
     {
-        // Update Select Line Values when Buttons are Pressed
-        Update_Select_Lines();
+        uint8_t curStateA = SET, prevStateA = SET;
+        uint8_t curStateB = SET, prevStateB = SET;
+        
+        curStateA = GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_0);
+        curStateB = GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_1);
 
-        // Compute Selection Value (S2 S1 S0 as Binary)
-        uint8_t selection = (S2 << 2) | (S1 << 1) | S0;
+        // Reset logic
+        if (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_2) == RESET)
+        {
+            Delay_Ms(30);
+            while (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_2) == RESET);
+            a = 0;
+            b = 0;
+        }
+        
+        // Increment a on button press
+        if (curStateA != prevStateA && curStateA == RESET)
+        {
+            Delay_Ms(30);
+            curStateA = GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_0);
+            if (curStateA == RESET)
+            {
+                a = (a + 1) % 8; // Ensure it stays within 3 bits (0-7)
+                while (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_0) == RESET);
+            }
+        }
+        
+        // Increment b on button press
+        if (curStateB != prevStateB && curStateB == RESET)
+        {
+            Delay_Ms(30);
+            curStateB = GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_1);
+            if (curStateB == RESET)
+            {
+                b = (b + 1) % 8; // Ensure it stays within 3 bits (0-7)
+                while (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_1) == RESET);
+            }
+        }
 
-        // Update LED Output
-        Select_LED(selection);
+        // Compute 3x3 multiplication result (max value = 49, fits in 6 bits)
+        uint8_t mul = a * b;
+
+        // Output result to LEDs
+        GPIO_WriteBit(GPIOC, GPIO_Pin_3, (mul & 1) ? SET : RESET);
+        GPIO_WriteBit(GPIOC, GPIO_Pin_4, (mul & 2) ? SET : RESET);
+        GPIO_WriteBit(GPIOC, GPIO_Pin_5, (mul & 4) ? SET : RESET);
+        GPIO_WriteBit(GPIOC, GPIO_Pin_6, (mul & 8) ? SET : RESET);
+        GPIO_WriteBit(GPIOD, GPIO_Pin_2, (mul & 16) ? SET : RESET);
+        GPIO_WriteBit(GPIOD, GPIO_Pin_3, (mul & 32) ? SET : RESET);
 
         Delay_Ms(100);
     }
 }
+
 ```
 
   
