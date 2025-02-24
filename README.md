@@ -299,6 +299,30 @@ This project demonstrates the implementation of a **3×3 multiplier** circuit us
 
 <details>
  <summary> Building and uploading of C program file on RISCV processor and implementation.</summary>
+ ### Working
+
+## **1. Input Handling:**
+- Two **3-bit binary numbers (A and B)** are entered using push buttons.
+- A **reset button** is provided to clear inputs.
+
+## **2. Multiplication Logic:**
+- The **two 3-bit numbers (0 to 7)** are multiplied.
+- The result is stored as an **8-bit binary value (0 to 49)**.
+
+### **3. Output Representation:**
+- The **8-bit result** is displayed using LEDs.
+- **LSBs (Lower 4 bits)** → **Port C LEDs**.
+- **MSBs (Upper 4 bits)** → **Port D LEDs**.
+
+## **4. Button Debouncing:**
+- A **delay mechanism** prevents false triggering.
+
+## **5. Real-time Operation:**
+- When a button is pressed, the input value is updated.
+- The multiplication result is dynamically updated and displayed.
+
+## **6. Reset Functionality:**
+- Pressing the **reset button** clears the inputs and resets the output.
 
 
 ## Truth Table for 3×3 Multiplier
