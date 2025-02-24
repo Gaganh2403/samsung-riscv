@@ -271,6 +271,8 @@ This project demonstrates the implementation of a **3×3 multiplier** circuit us
 - **Wiring**: GPIO pins are configured according to the reference manual for correct operation.
 
 ## Working and Block Diagram
+![To implement any digital circuit using VSDSquadron Mini and check whether building and uploading of C program file on RISCV processor works.](./TASK-5/image1.png) 
+
 ### Physical Circuit:
 - Two sets of 3-bit binary numbers are given as inputs via push buttons.
 - The selection logic reads the values of both numbers and computes the multiplication.
