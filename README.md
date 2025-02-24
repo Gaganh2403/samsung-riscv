@@ -291,6 +291,16 @@ This project demonstrates the implementation of a **3×3 multiplier** circuit us
    - The final 6-bit product is displayed on LEDs.
    - LSB (Least Significant Bit) represents the smallest value, and MSB (Most Significant Bit) represents the highest.
 
+
+
+</details>
+
+# Task 6
+
+<details>
+ <summary> Building and uploading of C program file on RISCV processor and implementation.</summary>
+
+
 ## Truth Table for 3×3 Multiplier
 
 | A2 | A1 | A0 | B2 | B1 | B0 | Output (P5 P4 P3 P2 P1 P0) |
@@ -400,14 +410,8 @@ int main()
         Delay_Ms(100);
     }
 }
-
 ```
-
-  
-     
-
 </details>
-
 
 
 
